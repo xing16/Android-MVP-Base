@@ -4,13 +4,10 @@ import android.widget.Toast;
 
 import com.xing.mvpsamle.R;
 import com.xing.mvpsamle.base.BaseMVPActivity;
-import com.xing.mvpsamle.test.MeiziBean;
-import com.xing.mvpsamle.test.MeiziPresenter;
-import com.xing.mvpsamle.test.MeiziView;
 
 import java.util.List;
 
-public class MainActivity extends BaseMVPActivity<MeiziView, MeiziPresenter> implements MeiziView {
+public class MainActivity extends BaseMVPActivity<MeiziPresenter> implements MeiziView {
 
     @Override
     protected int getLayoutResId() {
@@ -25,6 +22,7 @@ public class MainActivity extends BaseMVPActivity<MeiziView, MeiziPresenter> imp
     @Override
     protected void initData() {
         super.initData();
+        presenter.attachView(this);
         presenter.getMeiziList();
     }
 

@@ -8,14 +8,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class BaseMVPActivity<V extends BaseView, P extends BasePresenter> extends AppCompatActivity {
+public abstract class BaseMVPActivity<P extends BasePresenter> extends AppCompatActivity {
     protected Context mContext;
     protected P presenter;
-    /**
-     * 在 BaseMVPActivity 中引入泛型 V ,主要是为了在 BaseMVPActivity 父类中执行 attachView 操作
-     * 而不需要在其各个子类中添加这个操作
-     */
-    protected V view;
     protected Unbinder unbinder;
 
     @Override
@@ -24,9 +19,6 @@ public abstract class BaseMVPActivity<V extends BaseView, P extends BasePresente
         setContentView(getLayoutResId());
         mContext = this;
         presenter = createPresenter();
-        if (presenter != null) {
-            presenter.attachView(view);
-        }
         unbinder = ButterKnife.bind(this);
         initView();
         initData();
