@@ -2,9 +2,9 @@ package com.xing.mvpsamle.base;
 
 import android.content.Context;
 
+import com.xing.mvpsamle.http.ApiException;
 import com.xing.mvpsamle.http.ExceptionHandler;
 
-import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 /**
@@ -14,7 +14,6 @@ import io.reactivex.observers.DisposableObserver;
 public abstract class BaseObserver<T> extends DisposableObserver<BaseResponse<T>> {
 
     private Context mContext;
-    protected Disposable disposable;
 
     public BaseObserver(Context context) {
         this.mContext = context;
@@ -27,9 +26,15 @@ public abstract class BaseObserver<T> extends DisposableObserver<BaseResponse<T>
 
     @Override
     public void onNext(BaseResponse<T> baseResponse) {
-        T data = baseResponse.getResults();
-        // 将服务端获取到的正常数据传递给上层调用方
-        onOberverNext(data);
+        int errcode = baseResponse.getErrcode();
+        if (errcode == 0) {
+            T data = baseResponse.getResults();
+            // 将服务端获取到的正常数据传递给上层调用方
+            onSuccess(data);
+        } else {
+            ApiException apiException = new ApiException(errcode, baseResponse.getErrmsg());
+            onError(apiException);
+        }
     }
 
     /**
@@ -37,7 +42,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<BaseResponse<T>
      *
      * @param data
      */
-    protected abstract void onOberverNext(T data);
+    protected abstract void onSuccess(T data);
 
 
     /**

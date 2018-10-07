@@ -1,5 +1,8 @@
 package com.xing.mvpsamle.test;
 
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xing.mvpsamle.R;
@@ -7,7 +10,16 @@ import com.xing.mvpsamle.base.BaseMVPActivity;
 
 import java.util.List;
 
-public class MainActivity extends BaseMVPActivity<MeiziPresenter> implements MeiziView {
+import butterknife.BindView;
+
+public class MainActivity extends BaseMVPActivity<MeiziView, MeiziPresenter> implements MeiziView {
+
+    @BindView(R.id.tv_result)
+    TextView resultTxtView;
+
+    @BindView(R.id.pb_loading)
+    ProgressBar loadingProgressBar;
+
 
     @Override
     protected int getLayoutResId() {
@@ -22,8 +34,17 @@ public class MainActivity extends BaseMVPActivity<MeiziPresenter> implements Mei
     @Override
     protected void initData() {
         super.initData();
-        presenter.attachView(this);
-        presenter.getMeiziList();
+        presenter.getMeiziList("福利", 20, 1);
+    }
+
+    @Override
+    public void showLoading() {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingProgressBar.setVisibility(View.GONE);
     }
 
     @Override

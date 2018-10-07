@@ -8,7 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class BaseMVPActivity<P extends BasePresenter> extends AppCompatActivity {
+public abstract class BaseMVPActivity<V extends BaseView, P extends BasePresenter> extends AppCompatActivity {
     protected Context mContext;
     protected P presenter;
     protected Unbinder unbinder;
@@ -19,6 +19,9 @@ public abstract class BaseMVPActivity<P extends BasePresenter> extends AppCompat
         setContentView(getLayoutResId());
         mContext = this;
         presenter = createPresenter();
+        if (presenter != null) {
+            presenter.attachView((V)this);
+        }
         unbinder = ButterKnife.bind(this);
         initView();
         initData();
@@ -46,7 +49,6 @@ public abstract class BaseMVPActivity<P extends BasePresenter> extends AppCompat
         // Activity 销毁时取消所有的订阅
         if (presenter != null) {
             presenter.detachView();
-            presenter.unsubscribe();
             presenter = null;
         }
     }

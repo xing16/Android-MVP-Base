@@ -37,20 +37,20 @@ public class ModelManager {
     }
 
 
-    public void getMeiziList() {
-        RetrofitClient.getInstance(mContext)
-                .getApiService()
-                .getMeiziList("福利", 10, 1)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<List<MeiziBean>>(mContext) {
-                    @Override
-                    protected void onOberverNext(List<MeiziBean> data) {
-                        EventBus.getDefault().post(new MeiziEvent(data));
-                    }
-                });
-
-    }
+//    public void getMeiziList() {
+//        RetrofitClient.getInstance(mContext)
+//                .getApiService()
+//                .getMeiziList("福利", 10, 1)
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseObserver<List<MeiziBean>>(mContext) {
+//                    @Override
+//                    protected void onSuccess(List<MeiziBean> data) {
+//                        EventBus.getDefault().post(new MeiziEvent(data));
+//                    }
+//                });
+//
+//    }
 
 
 }

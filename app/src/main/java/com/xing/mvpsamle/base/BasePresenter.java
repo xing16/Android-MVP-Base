@@ -1,9 +1,16 @@
 package com.xing.mvpsamle.base;
 
+import com.xing.mvpsamle.http.ApiService;
+import com.xing.mvpsamle.http.RetrofitClient;
+
 import org.greenrobot.eventbus.EventBus;
 
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2018/9/15.
@@ -14,6 +21,8 @@ public abstract class BasePresenter<V extends BaseView> {
     protected V view;
     // 管理订阅关系，用于取消订阅
     private CompositeDisposable compositeDisposable;
+
+    protected ApiService apiService = RetrofitClient.getInstance().getApiService();
 
     public BasePresenter() {
         EventBus.getDefault().register(this);
@@ -34,6 +43,7 @@ public abstract class BasePresenter<V extends BaseView> {
      */
     public void detachView() {
         this.view = null;
+        unsubscribe();
     }
 
     /**
@@ -52,18 +62,23 @@ public abstract class BasePresenter<V extends BaseView> {
 
     /**
      * 添加新的订阅关系到管理类中
-     *
-     * @param disposable
      */
-    public void addSubscribe(Disposable disposable) {
-        compositeDisposable.add(disposable);
+    public void addSubscribe(Observable<?> observable, BaseObserver observer) {
+        if (compositeDisposable == null) {
+            compositeDisposable = new CompositeDisposable();
+        }
+        compositeDisposable.add(observable.subscribeOn(Schedulers.newThread()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(observer));
     }
 
     /**
      * 取消订阅
      */
     public void unsubscribe() {
-        compositeDisposable.clear();
+        if (compositeDisposable == null) {
+            compositeDisposable.dispose();
+        }
     }
 
 }
